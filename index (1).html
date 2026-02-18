@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayurvedic Diet Planner - Food Recognition & Prakriti Assessment</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-content">
+                <div class="logo">🌿</div>
+                <h1 class="main-title">Ayurvedic Diet Planner</h1>
+                <p class="subtitle">
+                    Discover your unique mind-body constitution and receive personalized 
+                    Ayurvedic meal recommendations with AI-powered food recognition
+                </p>
+                
+                <div class="feature-cards">
+                    <div class="feature-card" onclick="showScreen('assessment')">
+                        <div class="feature-icon">🧘‍♀️</div>
+                        <h3>Prakriti Assessment</h3>
+                        <p>Take our comprehensive assessment to discover your unique Ayurvedic constitution</p>
+                        <button class="btn btn-primary">Start Assessment</button>
+                    </div>
+                    
+                    <div class="feature-card" onclick="showScreen('food-recognition')">
+                        <div class="feature-icon">🍲</div>
+                        <h3>Food Recognition</h3>
+                        <p>Upload photos of your meals to get instant Ayurvedic analysis</p>
+                        <button class="btn btn-secondary">Analyze Food</button>
+                    </div>
+                    
+                    <div class="feature-card" onclick="showScreen('meal-planner')">
+                        <div class="feature-icon">🍽</div>
+                        <h3>Meal Planner</h3>
+                        <p>Get personalized meal plans based on your dosha constitution for optimal health</p>
+                        <button class="btn btn-outline">Plan Meals</button>
+                    </div>
+                </div>
+                
+                <p class="footer-text">Combining ancient Ayurvedic wisdom with modern AI technology</p>
+            </div>
+        </div>
+
+        <!-- Prakriti Assessment Screen -->
+        <div id="assessment-screen" class="screen">
+            <div class="assessment-container">
+                <div class="assessment-header">
+                    <h2>Prakriti Assessment</h2>
+                    <div class="progress-container">
+                        <span class="progress-text">Question <span id="current-question">1</span> of <span id="total-questions">10</span></span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question-card">
+                    <h3 id="question-text">Loading question...</h3>
+                    <div class="options-container" id="options-container">
+                        <!-- Options will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div class="assessment-footer">
+                    <button class="btn btn-outline" id="prev-btn" onclick="previousQuestion()" disabled>Previous</button>
+                    <span class="help-text">Your answers help determine your unique mind-body constitution</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prakriti Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-container">
+                <div class="result-card dosha-card" id="primary-dosha-card">
+                    <h2>Your Prakriti Analysis</h2>
+                    
+                    <div class="dosha-percentages">
+                        <h3>Dosha Percentages</h3>
+                        <div class="dosha-bars">
+                            <div class="dosha-item">
+                                <span class="dosha-label">Vata</span>
+                                <div class="dosha-bar-container">
+                                    <div class="dosha-bar vata-bar" id="vata-bar"></div>
+                                    <span class="dosha-percentage" id="vata-percentage">0%</span>
+                                </div>
+                            </div>
+                            <div class="dosha-item">
+                                <span class="dosha-label">Pitta</span>
+                                <div class="dosha-bar-container">
+                                    <div class="dosha-bar pitta-bar" id="pitta-bar"></div>
+                                    <span class="dosha-percentage" id="pitta-percentage">0%</span>
+                                </div>
+                            </div>
+                            <div class="dosha-item">
+                                <span class="dosha-label">Kapha</span>
+                                <div class="dosha-bar-container">
+                                    <div class="dosha-bar kapha-bar" id="kapha-bar"></div>
+                                    <span class="dosha-percentage" id="kapha-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="constitution-info">
+                        <p><strong>Primary:</strong> <span id="primary-dosha">-</span></p>
+                        <p><strong>Secondary:</strong> <span id="secondary-dosha">-</span></p>
+                    </div>
+                </div>
+                
+                <div class="dosha-details" id="dosha-details">
+                    <!-- Dosha details will be dynamically inserted here -->
+                </div>
+                
+                <div class="results-actions">
+                    <button class="btn btn-outline" onclick="retakeAssessment()">Retake Assessment</button>
+                    <button class="btn btn-secondary" onclick="showScreen('food-recognition')">Analyze Food</button>
+                    <button class="btn btn-primary" onclick="showScreen('welcome')">Back to Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meal Planner Screen -->
+        <div id="meal-planner-screen" class="screen">
+            <div class="meal-container">
+                <div class="meal-header">
+                    <h2>Personalized Meal Plan</h2>
+                    <div class="meal-actions">
+                        <button class="btn btn-primary" onclick="generateMealPlan()">
+                            <span>🍽</span> Generate New Plan
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="meal-summary" id="meal-summary" style="display: none;">
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <h3>Daily Summary</h3>
+                            <div class="calorie-summary">
+                                <p class="total-calories" id="total-calories">0 calories</p>
+                                <div class="meal-breakdown">
+                                    <div class="meal-item">
+                                        <span>Breakfast:</span>
+                                        <span id="breakfast-calories">0 cal</span>
+                                    </div>
+                                    <div class="meal-item">
+                                        <span>Lunch:</span>
+                                        <span id="lunch-calories">0 cal</span>
+                                    </div>
+                                    <div class="meal-item">
+                                        <span>Dinner:</span>
+                                        <span id="dinner-calories">0 cal</span>
+                                    </div>
+                                    <div class="meal-item">
+                                        <span>Snacks:</span>
+                                        <span id="snacks-calories">0 cal</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <h3>Dosha Balance</h3>
+                            <div class="dosha-balance" id="dosha-balance">
+                                <!-- Dosha balance will be dynamically inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meal-grid" id="meal-grid" style="display: none;">
+                    <!-- Breakfast -->
+                    <div class="meal-card">
+                        <h3><span>🌅</span> Breakfast</h3>
+                        <div class="meal-items" id="breakfast-items">
+                            <!-- Breakfast items will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Lunch -->
+                    <div class="meal-card">
+                        <h3><span>☀️</span> Lunch</h3>
+                        <div class="meal-items" id="lunch-items">
+                            <!-- Lunch items will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Dinner -->
+                    <div class="meal-card">
+                        <h3><span>🌙</span> Dinner</h3>
+                        <div class="meal-items" id="dinner-items">
+                            <!-- Dinner items will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Snacks -->
+                    <div class="meal-card">
+                        <h3><span>🍎</span> Snacks</h3>
+                        <div class="meal-items" id="snacks-items">
+                            <!-- Snack items will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meal-placeholder" id="meal-placeholder">
+                    <div class="placeholder-content">
+                        <div class="text-6xl mb-4">🍽</div>
+                        <h3>Ready for Your Personalized Meal Plan?</h3>
+                        <p>Generate a customized meal plan based on your constitution with foods that balance your doshas and support optimal health.</p>
+                        <button class="btn btn-primary" onclick="generateMealPlan()">Generate Meal Plan</button>
+                    </div>
+                </div>
+                
+                <div class="meal-actions">
+                    <button class="btn btn-primary" onclick="showScreen('welcome')">Back to Home</button>
+                </div>
+            </div>
+        </div>
+        <div id="food-recognition-screen" class="screen">
+            <div class="food-container">
+                <div class="food-header">
+                    <h2>Food Recognition & Analysis</h2>
+                </div>
+                
+                <div class="upload-section">
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="file-input" accept="image/*" style="display: none;">
+                        <div class="upload-content">
+                            <div class="upload-icon">📸</div>
+                            <h3>Upload food image</h3>
+                            <p>Drag and drop or click to select</p>
+                            <p class="upload-hint">Supports: JPEG, PNG, WebP</p>
+                        </div>
+                    </div>
+                    
+                    <div class="image-preview" id="image-preview" style="display: none;">
+                        <img id="preview-img" src="" alt="Uploaded food">
+                        <button class="btn btn-outline remove-btn" onclick="removeImage()">Remove</button>
+                        <div class="analyze-section">
+                            <button class="btn btn-primary" onclick="analyzeFood()">Analyze Food</button>
+                        </div>
+                    </div>
+                    
+                    <div class="processing" id="processing" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing food items...</p>
+                    </div>
+                </div>
+                
+                <div class="food-results" id="food-results" style="display: none;">
+                    <!-- Food results will be dynamically inserted here -->
+                </div>
+                
+                <div class="food-actions">
+                    <button class="btn btn-primary" onclick="showScreen('welcome')">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
